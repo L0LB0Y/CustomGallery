@@ -1,8 +1,6 @@
 package com.example.customgallery.di
 
 import android.content.Context
-import androidx.annotation.OptIn
-import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
 import dagger.Module
 import dagger.Provides
@@ -15,7 +13,6 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 class MainModule {
 
-    @OptIn(UnstableApi::class)
     @Provides
     @Singleton
     fun provideExoPlayer(@ApplicationContext context: Context): ExoPlayer {

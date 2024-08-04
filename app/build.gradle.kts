@@ -33,6 +33,9 @@ android {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
+    composeCompiler {
+        enableStrongSkippingMode = true
+    }
     kotlinOptions {
         jvmTarget = "1.8"
     }
@@ -67,4 +70,5 @@ dependencies {
     implementation(libs.coil.video)
     implementation(libs.androidx.media3.exoplayer)
     implementation(libs.androidx.media3.ui)
+    implementation(libs.androidx.lifecycle.runtime.compose)
 }
