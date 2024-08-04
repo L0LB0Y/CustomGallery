@@ -1,5 +1,6 @@
 package com.example.customgallery.ui.screen.commen_component
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.size
@@ -18,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.decode.VideoFrameDecoder
 import coil.request.ImageRequest
+import coil.request.videoFrameMillis
 import coil.request.videoFramePercent
 import com.example.customgallery.R
 import com.example.customgallery.ui.theme.CustomGalleryTheme
@@ -35,6 +37,7 @@ fun ImageCard(modifier: Modifier = Modifier, uri: String) {
         contentScale = ContentScale.Crop,
         modifier = modifier
             .clip(MaterialTheme.shapes.small)
+            .background(MaterialTheme.colorScheme.primary)
     )
 }
 
@@ -46,9 +49,9 @@ fun VideoCardWithThumb(modifier: Modifier = Modifier, uri: String) {
                 .Builder(LocalContext.current)
                 .data(uri)
                 .crossfade(true)
-                .decoderDispatcher(Dispatchers.IO)
                 .decoderFactory(VideoFrameDecoder.Factory())
-                .videoFramePercent(0.5)
+                .videoFrameMillis(1000)
+                .decoderDispatcher(Dispatchers.IO)
                 .build(),
             placeholder = painterResource(R.drawable.background_cover),
             contentDescription = "stringResource(R.string.description)",

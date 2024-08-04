@@ -6,11 +6,13 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.provider.Settings
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
 import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -31,6 +33,7 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -46,6 +49,8 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.example.customgallery.R
 import com.example.customgallery.ui.theme.CustomGalleryTheme
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @Composable
 fun SplashScreen(showTheProgressBar: Boolean, onGrantedThePermission: () -> Unit) {
@@ -61,41 +66,47 @@ fun SplashScreen(showTheProgressBar: Boolean, onGrantedThePermission: () -> Unit
         onResult = { result ->
             val isNotGranted =
                 listOfPermissions.any { permission -> result[permission] == false }
-            if (isNotGranted)
+            if (isNotGranted) {
                 Toast.makeText(
                     context,
                     "You need to grant all permissions",
                     Toast.LENGTH_SHORT
                 ).show()
+                activity?.let{
+                    listOfPermissions.forEach { permission ->
+                        if (!shouldShowRequestPermissionRationale(activity, permission))
+                            Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+                                this.data =
+                                    Uri.fromParts("package", context.packageName, null)
+                            }.also {
+                                activity.startActivity(it)
+                            }
+                    }
+                }
+            }
         }
     )
     var showRequestingPermissionButton by remember { mutableStateOf(false) }
+    val scope = rememberCoroutineScope()
     ObserveRequestingPermissionStatus(
         listOfPermissions = listOfPermissions,
         permissionStatus = { granted ->
-            if (granted)
+            if (granted) {
+                showRequestingPermissionButton = false
                 onGrantedThePermission()
-            else
-                showRequestingPermissionButton = true
+            } else
+                scope.launch {
+                    delay(500)
+                    showRequestingPermissionButton = true
+                }
+
         }
     )
     SplashScreenContent(
         showTheProgressBar = showTheProgressBar,
         showRequestingPermissionButton = showRequestingPermissionButton,
         onClickRequestingPermissionButton = {
-            activity?.let {
-                listOfPermissions.forEach { permission ->
-                    if (shouldShowRequestPermissionRationale(activity, permission))
-                        permissionRequest.launch(listOfPermissions.toTypedArray())
-                    else
-                        Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
-                            this.data =
-                                Uri.fromParts("package", context.packageName, null)
-                        }.also {
-                            activity.startActivity(it)
-                        }
-                }
-            }
+            permissionRequest.launch(listOfPermissions.toTypedArray())
         }
     )
 }
@@ -117,7 +128,7 @@ fun SplashScreenContent(
         )
 
         AnimatedVisibility(showTheProgressBar, modifier = Modifier.align(Alignment.Center)) {
-            Column (horizontalAlignment = Alignment.CenterHorizontally){
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 CircularProgressIndicator()
                 Spacer(modifier = Modifier.height(10.dp))
                 Text(text = "Loading The Data...", fontSize = 13.sp)
@@ -126,7 +137,8 @@ fun SplashScreenContent(
 
         AnimatedVisibility(
             visible = showRequestingPermissionButton,
-            enter = slideInVertically(tween(durationMillis = 400)), modifier = Modifier
+            enter = fadeIn(tween(500)) + slideInVertically(tween(durationMillis = 500)),
+            modifier = Modifier
                 .align(Alignment.BottomCenter)
                 .padding(bottom = 50.dp)
         ) {
@@ -151,12 +163,13 @@ fun ObserveRequestingPermissionStatus(
         val observer = object : DefaultLifecycleObserver {
             override fun onResume(owner: LifecycleOwner) {
                 super.onResume(owner)
-                permissionStatus(listOfPermissions.all { permission ->
-                    checkSelfPermission(
-                        context,
-                        permission
-                    ) == PackageManager.PERMISSION_GRANTED
-                })
+                permissionStatus(
+                    listOfPermissions.all { permission ->
+                        checkSelfPermission(
+                            context,
+                            permission
+                        ) == PackageManager.PERMISSION_GRANTED
+                    })
             }
         }
         lifecycleOwner.lifecycle.addObserver(observer)

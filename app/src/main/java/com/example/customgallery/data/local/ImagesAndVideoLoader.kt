@@ -7,7 +7,7 @@ import android.net.Uri
 import android.provider.MediaStore
 import com.example.customgallery.model.DeviceMedia
 import com.example.customgallery.model.FolderWithMedia
-import com.example.customgallery.model.MediaType
+import com.example.customgallery.utils.MediaType
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext

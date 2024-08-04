@@ -1,4 +1,4 @@
-package com.example.customgallery.model
+package com.example.customgallery.utils
 
 enum class MediaType {
     IMAGE, VIDEO, UNKNOWN

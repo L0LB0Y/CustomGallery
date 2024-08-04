@@ -43,10 +43,11 @@ import androidx.compose.ui.unit.sp
 import com.example.customgallery.R
 import com.example.customgallery.model.DeviceMedia
 import com.example.customgallery.model.FolderWithMedia
-import com.example.customgallery.model.MediaType
+import com.example.customgallery.utils.MediaType
 import com.example.customgallery.ui.screen.commen_component.ImageCard
 import com.example.customgallery.ui.screen.commen_component.VideoCardWithThumb
 import com.example.customgallery.ui.theme.CustomGalleryTheme
+import com.example.customgallery.utils.FoldersLayout
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalSharedTransitionApi::class)
 @Composable
