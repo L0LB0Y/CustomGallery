@@ -1,6 +1,7 @@
 package com.example.customgallery.ui.screen.commen_component
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -33,8 +34,7 @@ fun ImageCard(modifier: Modifier = Modifier, uri: String) {
         contentDescription = uri,
         contentScale = ContentScale.Crop,
         modifier = modifier
-            .size(250.dp)
-            .clip(MaterialTheme.shapes.medium)
+            .clip(MaterialTheme.shapes.small)
     )
 }
 
@@ -55,8 +55,7 @@ fun VideoCardWithThumb(modifier: Modifier = Modifier, uri: String) {
             contentScale = ContentScale.Crop,
             modifier = Modifier
                 .align(Alignment.Center)
-                .clip(MaterialTheme.shapes.medium)
-                .size(250.dp)
+                .clip(MaterialTheme.shapes.small)
         )
         Icon(
             painter = painterResource(id = R.drawable.play_circle_24px),
