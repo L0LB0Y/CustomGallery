@@ -209,20 +209,19 @@ fun FolderInformation(
     imagesCount: Int,
     videosCount: Int
 ) {
-    Row(
-        modifier,
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
+    Box(modifier,
     ) {
         if (imagesCount > 0)
             MediaIconWithQuantity(
                 mediaIconResourceID = R.drawable.image_24px,
-                quantity = imagesCount
+                quantity = imagesCount,
+                modifier = Modifier.align(Alignment.TopEnd)
             )
         if (videosCount > 0)
             MediaIconWithQuantity(
                 mediaIconResourceID = R.drawable.videocam_24px,
-                quantity = videosCount
+                quantity = videosCount,
+                modifier = Modifier.align(Alignment.TopStart)
             )
     }
 }

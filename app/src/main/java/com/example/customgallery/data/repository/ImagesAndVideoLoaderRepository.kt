@@ -11,7 +11,7 @@ import javax.inject.Singleton
 class ImagesAndVideoLoaderRepository @Inject constructor(private val imagesAndVideoLoader: ImagesAndVideoLoader) {
     private lateinit var allFolders: List<FolderWithMedia>
 
-    suspend fun initializeTheData() = withContext(Dispatchers.Default) {
+    suspend fun initializeTheData() = withContext(Dispatchers.IO) {
         allFolders = imagesAndVideoLoader.loadImagesAndVideos()
     }
 
